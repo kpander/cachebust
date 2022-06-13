@@ -1,0 +1,43 @@
+{
+  "name": "@kpander/cachebust",
+  "description": "Apply last-modified timestamp to static asset references in HTML",
+  "version": "1.0.0",
+  "homepage": "https://github.com/kpander/cachebust",
+  "author": {
+    "name": "Kendall Anderson",
+    "email": "<kpander@invisiblethreads.com>"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=7.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:kpander/cachebust.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "main": "Cachebust.js",
+  "files": [
+    "Cachebust.js",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "test": "jest"
+  },
+  "license": "MIT",
+  "keywords": [
+    "cache",
+    "cachebust",
+    "cachebuster",
+    "expire"
+  ],
+  "dependencies": {
+    "@kpander/nodejs-util": "^1.0.0"
+  },
+  "devDependencies": {
+    "jest": "^28.1.0",
+    "tmp": "^0.2.1"
+  }
+}

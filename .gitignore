@@ -1,0 +1,16 @@
+# Temporary files
+*.swp
+*.swo
+thumbs.db
+Thumbs.db
+.DS_Store
+*~
+desktop.ini
+
+# npm
+node_modules
+.npm
+npm-debug.log
+
+# keys
+.npmrc
