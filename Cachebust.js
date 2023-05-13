@@ -35,6 +35,36 @@ module.exports = class Cachebust {
   }
 
   /**
+   * Cachebust @import references in the given CSS.
+   *
+   * Expect options.path to be the base path from which source filenames can
+   * be found (for the purpose of getting their last modified time).
+   *
+   * @param string css to process
+   * @return string css with cachebusted static @import references
+   */
+  static css(css, options = {}) {
+    if (typeof css !== "string") return false;
+
+    options.path = options.path || "";
+    options.key = options.key || Cachebust.KEY;
+
+    const regex = /@import\s+["']((?!http)([^"']+\.css)([\?#].*)?)["'];/g;
+
+    [ ...css.matchAll(regex) ].forEach(result => {
+      const src = result[0];
+      const url = result[1]
+
+      const href = Cachebust._cachebust_href(url, options);
+      const cachebusted = `@import "${href}";`;
+      css = Util.replaceAll(css, src, cachebusted);
+
+    });
+
+    return css;
+  }
+
+  /**
    * Cachebust static references in the given html.
    *
    * Expect options.path to be the base path from which source filenames can

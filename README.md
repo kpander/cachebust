@@ -15,7 +15,7 @@ Then:
 $ npm install @kpander/cachebust
 ```
 
-## Usage
+## HTML Usage
 
 As an example, assume the following files exist:
 
@@ -24,6 +24,8 @@ As an example, assume the following files exist:
 /path/to/files/js/scripts.js
 /path/to/files/images/myimage.jpg
 ```
+
+Sample code to demonstrate functionality:
 
 ```js
 const Cachebust = require("@kpander/cachebust");
@@ -49,6 +51,8 @@ const html_cachebusted = Cachebust.html(html_src, options);
 console.log(html_cachebusted);
 ```
 
+Output from example above:
+
 ```
 <html>
 <head>
@@ -62,12 +66,59 @@ console.log(html_cachebusted);
 </html>
 ```
 
+## CSS Usage
+
+As an example, assume the following files exist:
+
+```
+/path/to/files/css/styles.css
+/path/to/files/css/component1/file1.css
+/path/to/files/css/component2/file2.css
+```
+
+The contents of `styles.css` includes imports to the other 3 files.
+
+Sample code to demonstrate functionality:
+
+```js
+const Cachebust = require("@kpander/cachebust");
+
+const css_src = `
+/* styles.css */
+body { margin: 0; }
+@import "./component1/file1.css";
+div { outline: 1px solid red; }
+@import "component2/file2.css?key=value";
+p { color: green; }
+@import url("https://something.com/external.css");
+`;
+
+const options = {
+  path: "/path/to/files"
+};
+const css_cachebusted = Cachebust.css(css_src, options);
+
+console.log(css_cachebusted);
+```
+
+Output from example above:
+
+```
+/* styles.css */
+body { margin: 0; }
+@import "./component1/file1.css?v=12345";
+div { outline: 1px solid red; }
+@import "component2/file2.css?key=value&v=12345";
+p { color: green; }
+@import url("https://something.com/external.css");
+```
+
 
 ## Options
 
 ### Path to static files: `options.path`
 
-You must provide the `path` option to indicate where the static files referenced in the HTML can be found on disk. If this path is not provided, all referenced static assets will be assumed to be missing.
+You must provide the `path` option to indicate where the static files referenced in the HTML or CSS can be found on disk. If this path is not provided, all referenced static assets will be assumed to be missing.
 
 ```js
 const Cachebust = require("@kpander/cachebust");
@@ -99,7 +150,7 @@ console.log(html_cachebusted);
 ```
 
 
-### Supported tag/attribute pairs: `options.tags`
+### Supported tag/attribute pairs: `options.tags` (for `html()` method only)
 
 The default supported HTML tags and attributes are:
 

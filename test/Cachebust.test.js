@@ -3,6 +3,7 @@
 /**
  * @file
  * Cachebust.test.js
+ * Primarily tests the html() method.
  */
 
 const Cachebust = require("../Cachebust");
