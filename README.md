@@ -33,7 +33,7 @@ const Cachebust = require("@kpander/cachebust");
 const html_src = `
 <html>
 <head>
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="/css/styles.css">
   <script src="js/scripts.js"></script>
 </head>
 <body>
@@ -56,7 +56,7 @@ Output from example above:
 ```
 <html>
 <head>
-  <link rel="stylesheet" href="css/styles.css?ts=1655087450">
+  <link rel="stylesheet" href="/css/styles.css?ts=1655087450">
   <script src="js/scripts.js?ts=1653436075"></script>
 </head>
 <body>

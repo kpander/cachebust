@@ -385,6 +385,36 @@ test(
   expect(pos_expected).toBeGreaterThan(-1);
 });
 
+test(
+  `[URL-006]
+  Given
+    - markup with an absolute reference to an asset that exists
+    - but without a domain name/protocol
+  When
+    - we build
+  Then
+    - the reference should still be absolute
+    - the reference should have a cachebust timestamp
+`.trim(), async() => {
+  // Given...
+  const tmpobj = tmp.dirSync();
+  const path_tmp = tmpobj.name;
+  touch(path_tmp, "myfile.jpg");
+
+  const html = `
+<img alt="something" src="/myfile.jpg"/>
+`;
+
+  // When...
+  const result = Cachebust.html(html, { path: path_tmp });
+  const regex = new RegExp(/src="\/myfile.jpg\?ts=[0-9]+"/);
+  const match = result.match(regex);
+
+  // Then...
+  expect(match).not.toEqual(null);
+});
+
+
 });
 
 // ---------------------------------------------------------------------
