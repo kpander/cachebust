@@ -1,5 +1,9 @@
 # cachebust Changelog
 
+  - v1.1.2 (2023-08-05)
+    - Bugfix: fixed bug where absolute paths (e.g., `href="/file.jpg"`) previously would have been converted to relative paths (e.g., `href="file.jpg?v=1234"`)
+      - See [Github issue](https://github.com/kpander/cachebust/issues/6)
+
   - v1.1.1 (2023-05-13)
     - Fixes dependabot security vulnerability
 

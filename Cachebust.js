@@ -140,11 +140,17 @@ module.exports = class Cachebust {
     const timestamp = Cachebust._get_timestamp(filename, options);
     url.searchParams.set(options.key, timestamp);
 
-    return url.toString().replace("https://fakeurl.url/", "");
+    let newUrl = url.toString().replace("https://fakeurl.url/", "");
+
+    // If the original href began with "/", the new one should as well.
+    if (href[0] === "/" && newUrl[0] !== "/") newUrl = "/" + newUrl;
+
+    return newUrl;
   }
 
   /**
-   * Determine if the given href is an absolute url or not.
+   * Determine if the given href is an absolute url or not. In this case,
+   * "absolute" means it has a protocol and domain.
    *
    * @param string href e.g., "https://test.com/path"
    * @return boolean
