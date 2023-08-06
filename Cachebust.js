@@ -135,7 +135,11 @@ module.exports = class Cachebust {
    */
   static _cachebust_href(href, options) {
     const url = new URL(href, "https://fakeurl.url");
-    const filename = url.pathname;
+    let filename = url.pathname;
+
+    if (href[0] === "." && filename[0] !== ".") {
+      filename = Cachebust._prefix_relatives(href, filename);
+    }
 
     const timestamp = Cachebust._get_timestamp(filename, options);
     url.searchParams.set(options.key, timestamp);
@@ -145,7 +149,31 @@ module.exports = class Cachebust {
     // If the original href began with "/", the new one should as well.
     if (href[0] === "/" && newUrl[0] !== "/") newUrl = "/" + newUrl;
 
+    // If the original href began with ".", the new one should as well.
+    if (href[0] === "." && newUrl[0] !== ".") {
+      newUrl = Cachebust._prefix_relatives(href, newUrl);
+    }
+
     return newUrl;
+  }
+
+  /**
+   * Take the relative path references from the beginning of href and apply
+   * them to newUrl.
+   */
+  static _prefix_relatives(href, newUrl) {
+    let prefixes = [];
+    const parts = href.split("/");
+    for (let i = 0; i < parts.length; i++) {
+      let part = parts[i];
+      if (part[0] === ".") {
+        prefixes.push(part);
+      } else {
+        break;
+      }
+    }
+
+    return prefixes.join("/") + "/" + newUrl;
   }
 
   /**
