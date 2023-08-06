@@ -414,6 +414,96 @@ test(
   expect(match).not.toEqual(null);
 });
 
+test(
+  `[URL-007]
+  Given
+    - markup with a relative reference to an asset that exists
+    - reference begins with "../"
+  When
+    - we build
+  Then
+    - the reference should still begin with "../"
+    - the reference should have a cachebust timestamp
+`.trim(), async() => {
+  // Given...
+  const tmpobj = tmp.dirSync();
+  const path_tmp = tmpobj.name;
+  const path_html = path.join(path_tmp, "html");
+  touch(path_tmp, "myfile.jpg");
+  touch(path_html, "tmp-ignore");
+
+  const html = `
+<img alt="something" src="../myfile.jpg"/>
+`;
+
+  // When...
+  const result = Cachebust.html(html, { path: path_html });
+  const regex = new RegExp(/src="\.\.\/myfile.jpg\?ts=[0-9]+"/);
+  const match = result.match(regex);
+
+  // Then...
+  expect(match).not.toEqual(null);
+});
+
+test(
+  `[URL-008]
+  Given
+    - markup with a relative reference to an asset that exists
+    - reference begins with "../../"
+  When
+    - we build
+  Then
+    - the reference should still begin with "../"
+    - the reference should have a cachebust timestamp
+`.trim(), async() => {
+  // Given...
+  const tmpobj = tmp.dirSync();
+  const path_tmp = tmpobj.name;
+  const path_html = path.join(path_tmp, "html1", "html2");
+  touch(path_tmp, "myfile.jpg");
+  touch(path_html, "tmp-ignore");
+
+  const html = `
+<img alt="something" src="../../myfile.jpg"/>
+`;
+
+  // When...
+  const result = Cachebust.html(html, { path: path_html });
+  const regex = new RegExp(/src="\.\.\/\.\.\/myfile.jpg\?ts=[0-9]+"/);
+  const match = result.match(regex);
+
+  // Then...
+  expect(match).not.toEqual(null);
+});
+
+test(
+  `[URL-009]
+  Given
+    - markup with a relative reference to an asset that exists
+    - reference begins with "./" (note: single dot!)
+  When
+    - we build
+  Then
+    - the reference should still begin with "./"
+    - the reference should have a cachebust timestamp
+`.trim(), async() => {
+  // Given...
+  const tmpobj = tmp.dirSync();
+  const path_tmp = tmpobj.name;
+  touch(path_tmp, "myfile.jpg");
+
+  const html = `
+<img alt="something" src="./myfile.jpg"/>
+`;
+
+  // When...
+  const result = Cachebust.html(html, { path: path_tmp });
+  const regex = new RegExp(/src="\.\/myfile.jpg\?ts=[0-9]+"/);
+  const match = result.match(regex);
+
+  // Then...
+  expect(match).not.toEqual(null);
+});
 
 });
 

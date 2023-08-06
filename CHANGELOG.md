@@ -1,5 +1,9 @@
 # cachebust Changelog
 
+  - v1.1.3 (2023-08-05)
+    - Bugfix: fixed bug where relative paths starting with `./` or `../` would have resolved to incorrect paths when adding the timestamp
+    - Maintenance: updates depdendabot vulnerability
+
   - v1.1.2 (2023-08-05)
     - Bugfix: fixed bug where absolute paths (e.g., `href="/file.jpg"`) previously would have been converted to relative paths (e.g., `href="file.jpg?v=1234"`)
       - See [Github issue](https://github.com/kpander/cachebust/issues/6)
