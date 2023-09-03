@@ -1,5 +1,8 @@
 # cachebust Changelog
 
+  - v1.1.5 (2023-09-03)
+    - Maintenance: updates Filerefs package, to exclude data URLs
+
   - v1.1.4 (2023-09-03)
     - Bugfix: sometimes absolute paths were not found correctly
       - We now use the Filerefs package to address this
