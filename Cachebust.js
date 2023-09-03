@@ -8,7 +8,7 @@
  */
 const fs = require("fs");
 const path = require("path");
-const Util = require("@kpander/nodejs-util");
+const Filerefs = require("@kpander/filerefs-js");
 
 module.exports = class Cachebust {
 
@@ -57,7 +57,7 @@ module.exports = class Cachebust {
 
       const href = Cachebust._cachebust_href(url, options);
       const cachebusted = `@import "${href}";`;
-      css = Util.replaceAll(css, src, cachebusted);
+      css = css.replaceAll(src, cachebusted);
 
     });
 
@@ -80,50 +80,33 @@ module.exports = class Cachebust {
     options.key = options.key || Cachebust.KEY;
     options.tags = options.tags || Cachebust.TAGS;
 
-    Object.keys(options.tags).forEach(tag => {
-      const attr = options.tags[tag];
-      html = Cachebust._process_tag_references(html, options, tag, attr);
+    options.basePath = options.path;
+    const refs = Filerefs.getFilerefs(html, options);
+
+    Object.keys(refs).forEach(key => {
+      const ref = refs[key];
+
+      const timestamp = Cachebust._get_timestamp(ref.relativeBase, options);
+      let url;
+      let replace;
+      if (ref.absolute) {
+        // Use a real timestamp.
+        url = new URL("http://test.com" + ref.absolute);
+        url.search = ref.relativeParams;
+        url.searchParams.set(options.key, timestamp);
+      } else {
+        // Use a fake timestamp.
+        url = new URL("http://test.com" + ref.relative);
+        url.searchParams.set(options.key, timestamp);
+      }
+      replace = ref.pre + ref.relativeBase + url.search + ref.relativeHash + ref.post;
+
+      const search = key;
+      html = html.replaceAll(search, replace);
+
     });
 
     return html;
-  }
-
-  static _process_tag_references(html, options, tag, attr) {
-    const regex = new RegExp(`<${tag}[^>]+${attr}="(.*?)"`, "ig");
-    const matches = html.match(regex);
-    if (matches === null) return html;
-
-    matches.forEach(html_match => {
-      html = Cachebust._process_tag_reference(html, options, html_match, attr);
-    });
-
-    return html;
-  }
-
-  /**
-   * Take the matching html tag with the file reference, and apply the
-   * cachebusting timestamp to the referenced URL. If the URL is an absolute
-   * reference (e.g., with a protocol and domain), don't change it.
-   *
-   * @param string html_match, containing one file match
-   *   = the matching string we want to cachebust, e.g.:
-   *     '<link rel="stylesheet" type="text/css" href="myfile.css"'
-   */
-  static _process_tag_reference(html, options, html_match, attr) {
-    const regex = new RegExp(`\\b` + attr + `="(.*?)"`, "i");
-    const match = html_match.match(regex);
-
-    if (match === null) return html;
-
-    const href = match[1];
-    if (Cachebust._is_absolute_url(href)) return html;
-
-    const url_replace = Cachebust._cachebust_href(href, options);
-    const search = `${attr}="${href}"`;
-    const replace = `${attr}="${url_replace}"`;
-    const cachebusted = Util.replaceAll(html_match, search, replace);
-
-    return Util.replaceAll(html, html_match, cachebusted);
   }
 
   /**
@@ -174,22 +157,6 @@ module.exports = class Cachebust {
     }
 
     return prefixes.join("/") + "/" + newUrl;
-  }
-
-  /**
-   * Determine if the given href is an absolute url or not. In this case,
-   * "absolute" means it has a protocol and domain.
-   *
-   * @param string href e.g., "https://test.com/path"
-   * @return boolean
-   */
-  static _is_absolute_url(href) {
-    try {
-      new URL(href);
-      return true;
-    } catch(err) {
-      return false;
-    }
   }
 
   /**
