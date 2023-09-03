@@ -1,5 +1,9 @@
 # cachebust Changelog
 
+  - v1.1.4 (2023-09-03)
+    - Bugfix: sometimes absolute paths were not found correctly
+      - We now use the Filerefs package to address this
+    
   - v1.1.3 (2023-08-05)
     - Bugfix: fixed bug where relative paths starting with `./` or `../` would have resolved to incorrect paths when adding the timestamp
     - Maintenance: updates depdendabot vulnerability
