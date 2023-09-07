@@ -43,9 +43,10 @@ module.exports = class Cachebust {
    * @param string css to process
    * @return string css with cachebusted static @import references
    */
-  static css(css, options = {}) {
+  static css(css, srcOptions = {}) {
     if (typeof css !== "string") return false;
 
+    let options = { ...srcOptions };
     options.path = options.path || "";
     options.key = options.key || Cachebust.KEY;
 

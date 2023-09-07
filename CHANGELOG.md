@@ -1,5 +1,9 @@
 # cachebust Changelog
 
+  - v1.1.6 (2023-09-07)
+    - Maintenance: internal changes to prevent side effects
+    - Maintenance: packaged code is now minified
+
   - v1.1.5 (2023-09-03)
     - Maintenance: updates Filerefs package, to exclude data URLs
 
