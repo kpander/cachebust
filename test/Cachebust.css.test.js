@@ -6,7 +6,7 @@
  * Tests the css() method.
  */
 
-const Cachebust = require("../Cachebust");
+const Cachebust = require("../src/Cachebust");
 const Util = require("@kpander/nodejs-util");
 const fs = require("fs");
 const path = require("path");
